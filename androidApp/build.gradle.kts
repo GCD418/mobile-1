@@ -30,6 +30,20 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+
+    flavorDimensions += "environment"
+    productFlavors{
+        create("dev") {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+            resValue("string", "app_name", "app-dev")
+        }
+        create("prod") {
+            dimension = "environment"
+            applicationIdSuffix = ".app"
+            resValue("string", "app_name", "app-prod")
+        }
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -50,5 +64,7 @@ android {
     }
     buildFeatures {
         compose = true
+        resValues = true
+        buildConfig = true
     }
 }
