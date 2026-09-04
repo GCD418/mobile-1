@@ -1,7 +1,7 @@
 package gcd.testing.firstproject.profile.presentation.viewmodel
 
-interface ProfileEvents {
+sealed interface ProfileEvents {
     object OnLogOut: ProfileEvents
-    object OnAccountSettings: ProfileEvents
-    object FavoriteMovies: ProfileEvents
+    object OnClickSettings: ProfileEvents
+    object OnBack: ProfileEvents
 }
