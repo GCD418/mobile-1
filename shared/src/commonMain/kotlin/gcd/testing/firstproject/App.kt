@@ -19,11 +19,13 @@ import org.jetbrains.compose.resources.painterResource
 import firstproject.shared.generated.resources.Res
 import firstproject.shared.generated.resources.compose_multiplatform
 import gcd.testing.firstproject.signin.presentation.screen.SigninScreen
+import gcd.testing.firstproject.userinformation.presentation.screen.UserInformationScreen
 
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
-        SigninScreen()
+        //SigninScreen()
+        UserInformationScreen()
     }
 }
