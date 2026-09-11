@@ -18,23 +18,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import gcd.testing.firstproject.navigation.NavRoute
 import gcd.testing.firstproject.signin.presentation.viewmodel.LoginEffects
 import gcd.testing.firstproject.signin.presentation.viewmodel.LoginEvents
 import gcd.testing.firstproject.signin.presentation.viewmodel.LoginViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun SigninScreen( viewModel: LoginViewModel = koinViewModel ()) {
+fun SigninScreen( navController: NavHostController, viewModel: LoginViewModel = koinViewModel ()) {
     val state = viewModel.state.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effects ->
             when(effects) {
-                LoginEffects.NavigateToHome -> TODO()
+                LoginEffects.NavigateToHome -> {
+                    navController.navigate(NavRoute.UserInformation)
+                }
                 is LoginEffects.ShowToast -> {
                     println("ERROR ${effects.message}")
                 }
 
                 LoginEffects.SignUp -> TODO()
+                LoginEffects.NavigateToGithub -> {
+                    navController.navigate(NavRoute.UserInformation)
+                }
             }
         }
     }
@@ -57,6 +65,11 @@ fun SigninScreen( viewModel: LoginViewModel = koinViewModel ()) {
             viewModel.emitEvent(LoginEvents.OnSubmit)
         }) {
             Text("Sign In")
+        }
+        Button(modifier = Modifier.fillMaxWidth(), onClick = {
+            viewModel.emitEvent(LoginEvents.OnGithub)
+        }) {
+            Text("GitHub")
         }
 
     }

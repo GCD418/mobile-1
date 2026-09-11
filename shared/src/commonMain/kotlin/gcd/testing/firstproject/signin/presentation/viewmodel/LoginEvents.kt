@@ -4,4 +4,5 @@ sealed interface LoginEvents {
     object OnSubmit: LoginEvents
     data class OnEmailChanged(val value: String): LoginEvents
     data class OnPasswordChanged(val value: String): LoginEvents
+    object OnGithub: LoginEvents
 }

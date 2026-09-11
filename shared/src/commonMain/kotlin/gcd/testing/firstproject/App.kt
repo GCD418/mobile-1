@@ -18,6 +18,7 @@ import org.jetbrains.compose.resources.painterResource
 
 import firstproject.shared.generated.resources.Res
 import firstproject.shared.generated.resources.compose_multiplatform
+import gcd.testing.firstproject.navigation.AppNavHost
 import gcd.testing.firstproject.signin.presentation.screen.SigninScreen
 import gcd.testing.firstproject.userinformation.presentation.screen.UserInformationScreen
 
@@ -26,6 +27,7 @@ import gcd.testing.firstproject.userinformation.presentation.screen.UserInformat
 fun App() {
     MaterialTheme {
         //SigninScreen()
-        UserInformationScreen()
+        //UserInformationScreen()
+        AppNavHost()
     }
 }

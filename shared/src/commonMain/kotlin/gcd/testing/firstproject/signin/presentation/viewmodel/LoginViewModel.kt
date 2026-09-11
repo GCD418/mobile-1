@@ -2,6 +2,7 @@ package gcd.testing.firstproject.signin.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import gcd.testing.firstproject.signin.presentation.viewmodel.LoginEffects.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -34,15 +35,19 @@ class LoginViewModel : ViewModel() {
             LoginEvents.OnSubmit -> {
                 var isValid = true
                 if (state.value.email.isBlank()) {
-                    emitEffect(LoginEffects.ShowToast("The email field is required"))
+                    emitEffect(ShowToast("The email field is required"))
                     isValid = false
                 } else if (state.value.password.isBlank()) {
-                    emitEffect(LoginEffects.ShowToast("You can't login without a password"))
+                    emitEffect(ShowToast("You can't login without a password"))
                     isValid = false
                 }
                 if (isValid) {
                     emitEffect(LoginEffects.NavigateToHome)
                 }
+            }
+
+            LoginEvents.OnGithub -> {
+                emitEffect(LoginEffects.NavigateToGithub)
             }
         }
     }
