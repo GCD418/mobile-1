@@ -2,6 +2,13 @@ package gcd.testing.firstproject.userinformation.data.service
 
 import gcd.testing.firstproject.userinformation.data.datasource.GithubRemoteDatasource
 import gcd.testing.firstproject.userinformation.data.dto.UserInfoDto
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import kotlinx.serialization.json.Json
 
 class GithubApiService : GithubRemoteDatasource {
