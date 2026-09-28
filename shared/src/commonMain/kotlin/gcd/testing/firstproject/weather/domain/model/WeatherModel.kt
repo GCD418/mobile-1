@@ -5,6 +5,7 @@ data class WeatherModel(
     val windSpeed: Float,
     val windDirection: Int,
     val weatherCode: Int,
+    val time: String,
     val latitude: Float,
     val longitude: Float,
 )
