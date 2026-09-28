@@ -3,6 +3,7 @@ package gcd.testing.firstproject.movieList.data.service
 import gcd.testing.firstproject.movieList.domain.model.MovieModel
 import gcd.testing.firstproject.userinformation.data.dto.MovieResponseDto
 import gcd.testing.firstproject.userinformation.data.dto.UserInfoDto
+import gcd.testing.firstproject.userinformation.data.toModel
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
