@@ -8,4 +8,7 @@ sealed class NavRoute {
     object SignIn: NavRoute()
     @Serializable
     object UserInformation: NavRoute()
+
+    @Serializable
+    object Weather: NavRoute()
 }
