@@ -42,6 +42,7 @@ class WeatherViewModel(
                     val lon = _state.value.longitude.toFloatOrNull()
 
                     if (lat == null || lon == null) {
+                        _state.update { it.copy(error = "Invalid coordinates") }
                         emitEffect(WeatherEffects.ShowError("Invalid coordinates"))
                         return@launch
                     }
