@@ -11,4 +11,7 @@ sealed class NavRoute {
 
     @Serializable
     object Weather: NavRoute()
+
+    @Serializable
+    object Dollar: NavRoute()
 }

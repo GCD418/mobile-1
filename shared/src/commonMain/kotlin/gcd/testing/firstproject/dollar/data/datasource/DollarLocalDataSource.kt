@@ -24,7 +24,7 @@ class DollarLocalDataSource (
     }
 
     private fun DollarModel.toEntity() = DollarEntity(
-        dollarOfficial = "12.05",
-        dollarParallel = "12.07"
+        dollarOfficial = this.official,
+        dollarParallel = this.parallel
     )
 }

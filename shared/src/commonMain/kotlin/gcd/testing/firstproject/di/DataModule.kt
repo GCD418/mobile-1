@@ -1,5 +1,10 @@
 package gcd.testing.firstproject.di
 
+import gcd.testing.firstproject.config.AppDatabase
+import gcd.testing.firstproject.dollar.data.dao.DollarDao
+import gcd.testing.firstproject.dollar.data.datasource.DollarLocalDataSource
+import gcd.testing.firstproject.dollar.data.repository.DollarRepositoryImpl
+import gcd.testing.firstproject.dollar.domain.repository.DollarRepository
 import gcd.testing.firstproject.userinformation.data.repository.GithubRepositoryImpl
 import gcd.testing.firstproject.userinformation.domain.repository.GithubRepository
 import gcd.testing.firstproject.weather.data.datasource.WeatherRemoteDatasource
@@ -13,4 +18,9 @@ val dataModule = module {
     single { WeatherClient() }
     single { WeatherRemoteDatasource(get()) }
     single<WeatherRepository> { WeatherRepositoryImpl(get()) }
+    
+    // Dollar dependencies
+    single<DollarDao> { get<AppDatabase>().getDao() }
+    single { DollarLocalDataSource(get()) }
+    single<DollarRepository> { DollarRepositoryImpl(get()) }
 }

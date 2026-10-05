@@ -7,12 +7,13 @@ import androidx.navigation.compose.rememberNavController
 import gcd.testing.firstproject.signin.presentation.screen.SigninScreen
 import gcd.testing.firstproject.userinformation.presentation.screen.UserInformationScreen
 import gcd.testing.firstproject.weather.presentation.screen.WeatherScreen
+import gcd.testing.firstproject.dollar.presentation.screen.DollarScreen
 
 @Composable
 fun AppNavHost() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = NavRoute.Weather) {
+    NavHost(navController = navController, startDestination = NavRoute.Dollar) {
         composable<NavRoute.SignIn> {
             SigninScreen(navController)
         }
@@ -23,6 +24,10 @@ fun AppNavHost() {
 
         composable<NavRoute.Weather> {
             WeatherScreen()
+        }
+
+        composable<NavRoute.Dollar> {
+            DollarScreen()
         }
     }
 }
