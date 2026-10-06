@@ -14,4 +14,7 @@ sealed class NavRoute {
 
     @Serializable
     object Dollar: NavRoute()
+
+    @Serializable
+    object Exchange: NavRoute()
 }

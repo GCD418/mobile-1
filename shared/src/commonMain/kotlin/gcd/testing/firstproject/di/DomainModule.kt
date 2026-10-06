@@ -2,6 +2,7 @@ package gcd.testing.firstproject.di
 
 import gcd.testing.firstproject.dollar.domain.usecase.AddDollarQuoteUseCase
 import gcd.testing.firstproject.dollar.domain.usecase.GetDollarQuotesUseCase
+import gcd.testing.firstproject.dollar.domain.usecase.ObserveExchangeUseCase
 import gcd.testing.firstproject.userinformation.domain.usecase.FindAliasUseCase
 import gcd.testing.firstproject.weather.domain.usecase.GetCurrentWeatherUseCase
 import org.koin.core.module.dsl.singleOf
@@ -12,4 +13,5 @@ val domainModule = module {
     singleOf(::GetCurrentWeatherUseCase)
     singleOf(::GetDollarQuotesUseCase)
     singleOf(::AddDollarQuoteUseCase)
+    singleOf(::ObserveExchangeUseCase)
 }
