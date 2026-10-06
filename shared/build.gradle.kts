@@ -71,6 +71,7 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.androidx.room3.runtime)
+            implementation(libs.firebase.database)
         }
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
