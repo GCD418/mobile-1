@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "837862879097",
+    "firebase_url": "https://mobile-first-project-92f4f-default-rtdb.firebaseio.com",
+    "project_id": "mobile-first-project-92f4f",
+    "storage_bucket": "mobile-first-project-92f4f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:837862879097:android:142ebf07db218854dc89a8",
+        "android_client_info": {
+          "package_name": "gcd.testing.firstproject.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOdtBSoR4f1OGyzz01hqkhZvpqQ6uevEU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
