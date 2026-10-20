@@ -69,6 +69,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.androidx.room3.sqlite.wrapper)
             implementation(libs.androidx.sqlite.bundled)
+            implementation(libs.androidx.work.runtime.ktx)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
