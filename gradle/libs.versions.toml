@@ -21,6 +21,7 @@ room3 = "3.1.0-alpha01"
 sqlite = "2.7.1"
 ksp = "2.3.6"
 firebaseDatabase = "2.7.0"
+firebaseAndroidBom = "35.0.2"
 googleServices = "4.4.2"
 workRuntimeKtx = "2.11.0"
 
@@ -59,6 +60,9 @@ androidx-room3-compiler = { module = "androidx.room3:room3-compiler", version.re
 androidx-room3-sqlite-wrapper = { module = "androidx.room3:room3-sqlite-wrapper", version.ref = "room3" }
 
 firebase-database = { module = "dev.gitlive:firebase-database", version.ref = "firebaseDatabase" }
+firebase-android-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseAndroidBom" }
+firebase-android-firestore = { module = "com.google.firebase:firebase-firestore" }
+firebase-android-database = { module = "com.google.firebase:firebase-database" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx"}
 
 [plugins]

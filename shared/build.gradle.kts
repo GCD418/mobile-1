@@ -70,6 +70,8 @@ kotlin {
             implementation(libs.androidx.room3.sqlite.wrapper)
             implementation(libs.androidx.sqlite.bundled)
             implementation(libs.androidx.work.runtime.ktx)
+            implementation(libs.firebase.android.firestore)
+            implementation(libs.firebase.android.database)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -84,6 +86,7 @@ kotlin {
 
 dependencies {
     androidRuntimeClasspath(libs.compose.uiTooling)
+    add("androidMainImplementation", platform(libs.firebase.android.bom))
     add("kspAndroid", libs.androidx.room3.compiler)
     add("kspIosArm64", libs.androidx.room3.compiler)
     add("kspIosSimulatorArm64", libs.androidx.room3.compiler)
