@@ -1,6 +1,6 @@
 Objective: Implement an Android-only global collaborative task list backed by Firestore and RTDB, with completion count and logical compensation.
-Branch: `test-2`; delivery strategy: `ask-on-risk`; test runner: not requested; verification command: `./gradlew :androidApp:assembleDebug`.
-Forecast: approximately 350 authored changed lines; reassess delivery before a commit if the feature exceeds 400.
+Branch: `test-2`; delivery strategy: `single-pr` (whole current branch scope); test runner: not requested; verification command: `./gradlew :androidApp:assembleDebug`.
+Forecast: approximately 550 authored changed lines after the no-test correction; the user selected one future PR, but did not authorize creating or publishing it.
 
 ## Specs
 
@@ -36,8 +36,8 @@ User requirement: “Rúbrica (50): Modelo Firestore + listener (10) · RTDB + l
 - Check each rubric item against S1–S5; record any unavailable runtime/emulator verification explicitly.
 
 ## Tasks
-- T1 — S1–S2; inline; in_progress; commit: pending. Add the model/mapping and Android Firestore/RTDB live data sources with required dependencies.
-- T2 — S3–S4; inline; pending; commit: pending. Implement and verify cross-service sequencing, RTDB transaction, conditional Firestore compensation, and logging without adding tests. Risk: item 4 (concurrent updates).
+- T1 — S1–S2; inline; done; commit: `bb1942c`. Add the model/mapping and Android Firestore/RTDB live data sources with required dependencies.
+- T2 — S3–S4; inline; in_progress; commit: pending. Implement and verify cross-service sequencing, RTDB transaction, conditional Firestore compensation, and logging without adding tests. Risk: item 4 (concurrent updates).
 - T3 — S5–S6; inline; pending; commit: pending. Add use cases/ViewModel, Koin wiring, Android-only navigation entry, animated list/count UI, and final rubric checks without adding tests.
 
 ## Log
@@ -85,3 +85,24 @@ A `README.md` diff appeared in the working tree after the initial clean status; 
 
 ### L10 — T1 GREEN evidence
 `./gradlew :shared:testAndroidHostTest --tests '*TaskDocumentMapperTest'` exited 0 after the Gradle BoM fix (55s); the output confirms `:shared:compileAndroidMain` and `:shared:testAndroidHostTest` succeeded. Existing expect/actual beta warnings were the only warnings shown. The temporary test source was removed after the user's correction; no test source remains in the feature.
+
+### L11 — T1 work-unit completion
+The model, mapper, Firestore snapshot listener, RTDB value listener, transaction adapters, and Android Firebase dependencies compiled successfully and were committed as `bb1942c` (`feat(tasks): add Firebase listener data sources`). Static inspection confirms listener cleanup on flow cancellation and the approved `/tareas` / `/stats/completadas` paths. No live Firebase writes were performed.
+
+### L12 — Delivery budget
+The commit hook reports 1,328 authored changed lines across 9 commits on `test-2` since `master`; this includes pre-existing branch history, not only this feature. This feature is forecast above 400 authored lines. Apply `ask-on-risk` and record the chosen delivery slice before the next work-unit commit; do not push or create a PR without explicit authorization.
+
+### L13 — T2 implementation progress
+Added the shared completion coordinator, conditional Firestore compensation, typed synchronization failure, and Android logging adapter. Android source compilation is running; T2 remains in progress, with no test code added.
+
+### L14 — T2 compile and source review
+`./gradlew :shared:compileAndroidMain` exited 0 in 11s; only existing expect/actual beta warnings were emitted. Source review confirms Firestore is written first, RTDB uses a transaction, compensation only restores the expected current task state, and both primary/compensation failures are logged and surfaced. No tests were added. T2 remains open pending its work-unit commit and independent high-risk verification.
+
+### L15 — Delivery decision required
+Before another work-unit commit, `ask-on-risk` requires the user to select one delivery slice: feature-branch chain, verified default/main chain, or one single PR. The choice only affects a possible future review; it does not authorize push, PR creation, or merge. T2 is blocked until the user selects.
+
+### L16 — User delivery choice (2026-10-26, verbatim selection)
+“Un único PR — menos recomendado” (`single-pr`).
+- Delivery strategy is now `single-pr`; clear the chain choice and suppress further chain-strategy prompts.
+- Whole-PR scope recorded as the current `test-2` branch with this feature; the commit hook counted 1,328 authored changed lines since `master`, including pre-existing commits. This selection does not authorize push, PR creation, or merge.
+- T2 is unblocked and can continue.
