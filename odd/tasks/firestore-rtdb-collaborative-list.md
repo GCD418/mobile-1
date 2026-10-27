@@ -39,7 +39,7 @@ User requirement: “Rúbrica (50): Modelo Firestore + listener (10) · RTDB + l
 ## Tasks
 - T1 — S1–S2; inline; done; commit: `bb1942c`. Add the model/mapping and Android Firestore/RTDB live data sources with required dependencies.
 - T2 — S3–S4; inline; done; commit: `736c42c`. Implement and verify cross-service sequencing, RTDB transaction, conditional Firestore compensation, and logging without adding tests. Risk: item 4 (concurrent updates); the remaining concurrent-toggle race is explicitly accepted.
-- T3 — S5–S6; inline; in_progress; commit: pending. Add use cases/ViewModel, Koin wiring, Android-only navigation entry, animated list/count UI, and final rubric checks without adding tests.
+- T3 — S5–S6; inline; done; commit: `efdc81b`. Add use cases/ViewModel, Koin wiring, Android-only navigation entry, animated list/count UI, and final rubric checks without adding tests.
 
 ## Log
 
@@ -131,3 +131,6 @@ Added the three domain use cases, ViewModel/state/events, Compose task list with
 
 ### L23 — Android application build
 `./gradlew :androidApp:assembleDebug` exited 0 after 2m 1s; both `assembleDevDebug` and `assembleProdDebug` completed. No tests or live Firebase writes were performed after the user's correction. The feature's source review/build checks are complete; T3 remains in progress until its work-unit commit.
+
+### L24 — Feature closure
+T3 was committed as `efdc81b` (`feat(tasks): add collaborative task list UI`). All three implementation work units are committed: `bb1942c` (listeners/model), `736c42c` (cross-service best-effort coordination), and `efdc81b` (ViewModel/UI). Android dev/prod debug assembly succeeded. No test source remains, no live Firebase writes were performed, no RDD lifecycle was started, and no PR/push/merge was performed. The accepted same-task concurrent-toggle race remains documented in S3 and L21.
