@@ -24,10 +24,10 @@ import gcd.testing.firstproject.userinformation.presentation.screen.UserInformat
 
 @Composable
 @Preview
-fun App() {
+fun App(openTasksOnStart: Boolean = false) {
     MaterialTheme {
         //SigninScreen()
         //UserInformationScreen()
-        AppNavHost()
+        AppNavHost(openTasksOnStart = openTasksOnStart)
     }
 }

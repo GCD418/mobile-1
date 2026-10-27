@@ -6,6 +6,7 @@ data class CollaborativeTasksState(
     val tasks: List<CollaborativeTask> = emptyList(),
     val completedCount: Int = 0,
     val pendingTaskIds: Set<String> = emptySet(),
+    val notificationsMuted: Boolean = false,
     val isLoading: Boolean = true,
     val error: String? = null,
 )

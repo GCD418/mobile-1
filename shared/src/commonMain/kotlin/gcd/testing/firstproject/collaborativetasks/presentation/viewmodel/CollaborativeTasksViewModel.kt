@@ -2,9 +2,11 @@ package gcd.testing.firstproject.collaborativetasks.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import gcd.testing.firstproject.collaborativetasks.domain.usecase.GetTaskNotificationsMutedUseCase
 import gcd.testing.firstproject.collaborativetasks.domain.usecase.ObserveCollaborativeTasksUseCase
 import gcd.testing.firstproject.collaborativetasks.domain.usecase.ObserveCompletedTaskCountUseCase
 import gcd.testing.firstproject.collaborativetasks.domain.usecase.SetCollaborativeTaskCompletionUseCase
+import gcd.testing.firstproject.collaborativetasks.domain.usecase.SetTaskNotificationsMutedUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -16,8 +18,12 @@ class CollaborativeTasksViewModel(
     private val observeTasks: ObserveCollaborativeTasksUseCase,
     private val observeCompletedCount: ObserveCompletedTaskCountUseCase,
     private val setTaskCompletion: SetCollaborativeTaskCompletionUseCase,
+    private val getNotificationsMuted: GetTaskNotificationsMutedUseCase,
+    private val setNotificationsMuted: SetTaskNotificationsMutedUseCase,
 ) : ViewModel() {
-    private val _state = MutableStateFlow(CollaborativeTasksState())
+    private val _state = MutableStateFlow(
+        CollaborativeTasksState(notificationsMuted = getNotificationsMuted()),
+    )
     val state = _state.asStateFlow()
 
     init {
@@ -46,6 +52,11 @@ class CollaborativeTasksViewModel(
 
     fun emitEvent(event: CollaborativeTasksEvent) {
         when (event) {
+            CollaborativeTasksEvent.ToggleNotificationMute -> {
+                val muted = !_state.value.notificationsMuted
+                setNotificationsMuted(muted)
+                _state.update { it.copy(notificationsMuted = muted) }
+            }
             is CollaborativeTasksEvent.CompletionChanged -> {
                 updateTaskCompletion(event.taskId, event.isCompleted)
             }

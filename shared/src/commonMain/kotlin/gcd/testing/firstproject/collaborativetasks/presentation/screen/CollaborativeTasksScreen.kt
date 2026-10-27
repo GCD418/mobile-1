@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,6 +42,11 @@ fun CollaborativeTasksScreen(viewModel: CollaborativeTasksViewModel = koinViewMo
         Text("Collaborative tasks", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(8.dp))
         Text("Completed: $animatedCount", style = MaterialTheme.typography.titleMedium)
+        Button(
+            onClick = { viewModel.emitEvent(CollaborativeTasksEvent.ToggleNotificationMute) },
+        ) {
+            Text(if (state.notificationsMuted) "Activar notificaciones" else "Silenciar notificaciones")
+        }
         Spacer(modifier = Modifier.height(16.dp))
 
         state.error?.let { error ->
