@@ -2,6 +2,7 @@ package gcd.testing.firstproject.di
 
 import gcd.testing.firstproject.dollar.presentation.viewmodel.DollarViewModel
 import gcd.testing.firstproject.dollar.presentation.viewmodel.ExchangeViewModel
+import gcd.testing.firstproject.collaborativetasks.presentation.viewmodel.CollaborativeTasksViewModel
 import gcd.testing.firstproject.signin.presentation.viewmodel.LoginViewModel
 import gcd.testing.firstproject.userinformation.presentation.viewmodel.UserInformationViewModel
 import gcd.testing.firstproject.weather.presentation.viewmodel.WeatherViewModel
@@ -14,4 +15,5 @@ val presentationModule = module {
     viewModelOf(::WeatherViewModel)
     viewModelOf(::DollarViewModel)
     viewModelOf(::ExchangeViewModel)
+    viewModelOf(::CollaborativeTasksViewModel)
 }

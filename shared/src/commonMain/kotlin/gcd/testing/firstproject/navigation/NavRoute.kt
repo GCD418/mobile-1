@@ -17,4 +17,7 @@ sealed class NavRoute {
 
     @Serializable
     object Exchange: NavRoute()
+
+    @Serializable
+    object CollaborativeTasks: NavRoute()
 }

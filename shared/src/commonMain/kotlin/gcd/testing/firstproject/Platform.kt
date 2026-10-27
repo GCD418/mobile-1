@@ -10,3 +10,5 @@ interface Platform {
 }
 
 expect fun getPlatform(): Platform
+
+expect fun isCollaborativeTaskFeatureEnabled(): Boolean
