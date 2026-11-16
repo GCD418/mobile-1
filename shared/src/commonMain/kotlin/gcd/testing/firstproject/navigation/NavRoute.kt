@@ -20,4 +20,7 @@ sealed class NavRoute {
 
     @Serializable
     object CollaborativeTasks: NavRoute()
+
+    @Serializable
+    object BiometricSession: NavRoute()
 }

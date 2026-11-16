@@ -1,5 +1,6 @@
 package gcd.testing.firstproject.di
 
+import gcd.testing.firstproject.biometrics.presentation.viewmodel.BiometricSessionViewModel
 import gcd.testing.firstproject.dollar.presentation.viewmodel.DollarViewModel
 import gcd.testing.firstproject.dollar.presentation.viewmodel.ExchangeViewModel
 import gcd.testing.firstproject.collaborativetasks.presentation.viewmodel.CollaborativeTasksViewModel
@@ -16,4 +17,5 @@ val presentationModule = module {
     viewModelOf(::DollarViewModel)
     viewModelOf(::ExchangeViewModel)
     viewModelOf(::CollaborativeTasksViewModel)
+    viewModelOf(::BiometricSessionViewModel)
 }

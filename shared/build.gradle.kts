@@ -63,6 +63,8 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.androidx.room3.runtime)
             implementation(libs.firebase.database)
+            implementation(libs.ksafe)
+            implementation(libs.ksafe.biometrics)
         }
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)

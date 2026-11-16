@@ -1,5 +1,6 @@
 package gcd.testing.firstproject.di
 
+import eu.anifantakis.lib.ksafe.KSafe
 import gcd.testing.firstproject.config.AppDatabase
 import gcd.testing.firstproject.collaborativetasks.data.datasource.CollaborativeTaskDataSource
 import gcd.testing.firstproject.collaborativetasks.data.datasource.FirebaseCollaborativeTaskDataSource
@@ -19,6 +20,7 @@ actual fun platformModule(): Module = module {
     single<AppDatabase> {
         getDatabaseBuilder(get()).build()
     }
+    single { KSafe(get()) }
     single<CollaborativeTaskDataSource> { FirebaseCollaborativeTaskDataSource() }
     single<TaskLogger> { AndroidTaskLogger() }
     single<CollaborativeTaskRepository> { CollaborativeTaskRepositoryImpl(get(), get()) }

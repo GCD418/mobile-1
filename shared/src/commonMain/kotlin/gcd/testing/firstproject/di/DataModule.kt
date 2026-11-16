@@ -1,5 +1,8 @@
 package gcd.testing.firstproject.di
 
+import gcd.testing.firstproject.biometrics.data.datasource.FakeBiometricRemoteDataSource
+import gcd.testing.firstproject.biometrics.data.repository.BiometricSessionRepositoryImpl
+import gcd.testing.firstproject.biometrics.domain.repository.BiometricSessionRepository
 import gcd.testing.firstproject.config.AppDatabase
 import gcd.testing.firstproject.dollar.data.dao.DollarDao
 import gcd.testing.firstproject.dollar.data.datasource.DollarLocalDataSource
@@ -30,4 +33,8 @@ val dataModule = module {
 
     singleOf(::RealTimeDataBase)
     single<ExchangeRepository> { ExchangeRepositoryImpl(get()) }
+
+    // Biometrics dependencies
+    singleOf(::FakeBiometricRemoteDataSource)
+    single<BiometricSessionRepository> { BiometricSessionRepositoryImpl(get(), get()) }
 }

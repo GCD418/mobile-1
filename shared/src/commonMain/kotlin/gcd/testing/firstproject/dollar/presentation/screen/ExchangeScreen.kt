@@ -17,6 +17,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ExchangeScreen(
     viewModel: ExchangeViewModel = koinViewModel(),
     onOpenCollaborativeTasks: (() -> Unit)? = null,
+    onOpenBiometricSession: (() -> Unit)? = null,
 ) {
 
     Column(
@@ -29,6 +30,11 @@ fun ExchangeScreen(
         onOpenCollaborativeTasks?.let { openTasks ->
             Button(onClick = openTasks) {
                 Text("Collaborative task list")
+            }
+        }
+        onOpenBiometricSession?.let { openBiometrics ->
+            Button(onClick = openBiometrics) {
+                Text("Autenticación Biométrica (Demo 50%)")
             }
         }
     }

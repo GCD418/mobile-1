@@ -5,6 +5,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import gcd.testing.firstproject.biometrics.presentation.screen.BiometricSessionScreen
 import gcd.testing.firstproject.collaborativetasks.data.service.TaskAddedNotificationService
 import gcd.testing.firstproject.isCollaborativeTaskFeatureEnabled
 import gcd.testing.firstproject.collaborativetasks.presentation.screen.CollaborativeTasksScreen
@@ -31,9 +32,20 @@ fun AppNavHost(openTasksOnStart: Boolean = false) {
     val startDestination = if (openTasksOnStart && collaborativeTasksEnabled) {
         NavRoute.CollaborativeTasks
     } else {
-        NavRoute.Exchange
+        NavRoute.BiometricSession
     }
     NavHost(navController = navController, startDestination = startDestination) {
+        composable<NavRoute.BiometricSession> {
+            BiometricSessionScreen(
+                onOpenExchange = { navController.navigate(NavRoute.Exchange) },
+                onOpenCollaborativeTasks = if (collaborativeTasksEnabled) {
+                    { navController.navigate(NavRoute.CollaborativeTasks) }
+                } else {
+                    null
+                },
+            )
+        }
+
         composable<NavRoute.SignIn> {
             SigninScreen(navController)
         }
@@ -62,6 +74,9 @@ fun AppNavHost(openTasksOnStart: Boolean = false) {
                     { navController.navigate(NavRoute.CollaborativeTasks) }
                 } else {
                     null
+                },
+                onOpenBiometricSession = {
+                    navController.navigate(NavRoute.BiometricSession)
                 },
             )
         }

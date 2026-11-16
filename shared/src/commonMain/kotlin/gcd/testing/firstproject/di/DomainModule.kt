@@ -1,5 +1,10 @@
 package gcd.testing.firstproject.di
 
+import gcd.testing.firstproject.biometrics.domain.usecase.EnrollBiometricsUseCase
+import gcd.testing.firstproject.biometrics.domain.usecase.LockSessionUseCase
+import gcd.testing.firstproject.biometrics.domain.usecase.ObserveSessionStateUseCase
+import gcd.testing.firstproject.biometrics.domain.usecase.ResetEnrollmentUseCase
+import gcd.testing.firstproject.biometrics.domain.usecase.UnlockWithBiometricsUseCase
 import gcd.testing.firstproject.dollar.domain.usecase.AddDollarQuoteUseCase
 import gcd.testing.firstproject.dollar.domain.usecase.GetDollarQuotesUseCase
 import gcd.testing.firstproject.dollar.domain.usecase.ObserveExchangeUseCase
@@ -24,4 +29,9 @@ val domainModule = module {
     singleOf(::SetCollaborativeTaskCompletionUseCase)
     singleOf(::GetTaskNotificationsMutedUseCase)
     singleOf(::SetTaskNotificationsMutedUseCase)
+    singleOf(::ObserveSessionStateUseCase)
+    singleOf(::EnrollBiometricsUseCase)
+    singleOf(::UnlockWithBiometricsUseCase)
+    singleOf(::LockSessionUseCase)
+    singleOf(::ResetEnrollmentUseCase)
 }
