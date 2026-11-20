@@ -1,6 +1,10 @@
 package gcd.testing.firstproject.di
 
+import android.app.Application
+import android.content.Context
 import eu.anifantakis.lib.ksafe.KSafe
+import gcd.testing.firstproject.biometrics.data.security.BiometricPromptAuthenticator
+import gcd.testing.firstproject.biometrics.data.security.CurrentActivityHolder
 import gcd.testing.firstproject.config.AppDatabase
 import gcd.testing.firstproject.collaborativetasks.data.datasource.CollaborativeTaskDataSource
 import gcd.testing.firstproject.collaborativetasks.data.datasource.FirebaseCollaborativeTaskDataSource
@@ -21,6 +25,11 @@ actual fun platformModule(): Module = module {
         getDatabaseBuilder(get()).build()
     }
     single { KSafe(get()) }
+    single {
+        val context: Context = get()
+        (context.applicationContext as? Application)?.let { CurrentActivityHolder.register(it) }
+        BiometricPromptAuthenticator(context.applicationContext)
+    }
     single<CollaborativeTaskDataSource> { FirebaseCollaborativeTaskDataSource() }
     single<TaskLogger> { AndroidTaskLogger() }
     single<CollaborativeTaskRepository> { CollaborativeTaskRepositoryImpl(get(), get()) }

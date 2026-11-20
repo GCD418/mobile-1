@@ -25,6 +25,7 @@ firebaseAndroidBom = "35.0.2"
 googleServices = "4.4.2"
 workRuntimeKtx = "2.11.0"
 ksafe = "3.3.0"
+androidx-biometric = "1.1.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -66,6 +67,7 @@ firebase-android-bom = { module = "com.google.firebase:firebase-bom", version.re
 firebase-android-firestore = { module = "com.google.firebase:firebase-firestore" }
 firebase-android-database = { module = "com.google.firebase:firebase-database" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx"}
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "androidx-biometric" }
 ksafe = { module = "eu.anifantakis:ksafe", version.ref = "ksafe" }
 ksafe-biometrics = { module = "eu.anifantakis:ksafe-biometrics", version.ref = "ksafe" }
 

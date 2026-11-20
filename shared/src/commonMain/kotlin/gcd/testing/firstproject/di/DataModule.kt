@@ -1,6 +1,9 @@
 package gcd.testing.firstproject.di
 
+import gcd.testing.firstproject.biometrics.data.datasource.BiometricRemoteDataSource
 import gcd.testing.firstproject.biometrics.data.datasource.FakeBiometricRemoteDataSource
+import gcd.testing.firstproject.biometrics.data.datasource.KtorBiometricRemoteDataSource
+import gcd.testing.firstproject.biometrics.data.network.createBiometricHttpClient
 import gcd.testing.firstproject.biometrics.data.repository.BiometricSessionRepositoryImpl
 import gcd.testing.firstproject.biometrics.domain.repository.BiometricSessionRepository
 import gcd.testing.firstproject.config.AppDatabase
@@ -20,6 +23,8 @@ import gcd.testing.firstproject.weather.domain.repository.WeatherRepository
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
+const val USE_MOCK_BACKEND = false
+
 val dataModule = module {
     single<GithubRepository> { GithubRepositoryImpl() }
     single { WeatherClient() }
@@ -35,6 +40,25 @@ val dataModule = module {
     single<ExchangeRepository> { ExchangeRepositoryImpl(get()) }
 
     // Biometrics dependencies
+    single {
+        createBiometricHttpClient(
+            sessionRepositoryProvider = { get<BiometricSessionRepository>() },
+        )
+    }
     singleOf(::FakeBiometricRemoteDataSource)
-    single<BiometricSessionRepository> { BiometricSessionRepositoryImpl(get(), get()) }
+    single { KtorBiometricRemoteDataSource(httpClient = get()) }
+    single<BiometricRemoteDataSource> {
+        if (USE_MOCK_BACKEND) {
+            get<FakeBiometricRemoteDataSource>()
+        } else {
+            get<KtorBiometricRemoteDataSource>()
+        }
+    }
+    single<BiometricSessionRepository> {
+        BiometricSessionRepositoryImpl(
+            ksafe = get(),
+            remoteDataSource = get(),
+            biometricAuthenticator = get(),
+        )
+    }
 }

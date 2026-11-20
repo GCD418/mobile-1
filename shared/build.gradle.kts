@@ -64,7 +64,6 @@ kotlin {
             implementation(libs.androidx.room3.runtime)
             implementation(libs.firebase.database)
             implementation(libs.ksafe)
-            implementation(libs.ksafe.biometrics)
         }
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
@@ -73,6 +72,7 @@ kotlin {
             implementation(libs.androidx.room3.sqlite.wrapper)
             implementation(libs.androidx.sqlite.bundled)
             implementation(libs.androidx.work.runtime.ktx)
+            implementation(libs.androidx.biometric)
             implementation(libs.firebase.android.firestore)
             implementation(libs.firebase.android.database)
         }

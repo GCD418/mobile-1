@@ -7,6 +7,8 @@ interface BiometricSessionRepository {
     val sessionState: StateFlow<SessionState>
     suspend fun enrollBiometrics(): Result<Unit>
     suspend fun unlockAndAuthenticate(): Result<Unit>
+    suspend fun simulateProtectedApiRequest(forceUnauthorized: Boolean = false): Result<String>
     fun lockSession()
     fun resetEnrollment()
+    fun openSecuritySettings()
 }

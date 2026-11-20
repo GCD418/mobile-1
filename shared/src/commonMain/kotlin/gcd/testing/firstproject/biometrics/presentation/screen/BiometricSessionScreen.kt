@@ -21,6 +21,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -31,7 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import gcd.testing.firstproject.biometrics.domain.model.BiometricAuthOutcome
 import gcd.testing.firstproject.biometrics.domain.model.SessionState
+import gcd.testing.firstproject.biometrics.domain.model.toReadableMessage
+import gcd.testing.firstproject.biometrics.presentation.lifecycle.SessionLifecycleObserver
 import gcd.testing.firstproject.biometrics.presentation.viewmodel.BiometricSessionEvent
 import gcd.testing.firstproject.biometrics.presentation.viewmodel.BiometricSessionViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -44,6 +48,13 @@ fun BiometricSessionScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
+    // Bloqueo automático al pasar la app a segundo plano (ON_STOP)
+    SessionLifecycleObserver(
+        onAppBackgrounded = {
+            viewModel.emitEvent(BiometricSessionEvent.OnAppBackgrounded)
+        },
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -53,7 +64,7 @@ fun BiometricSessionScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
-            text = "Autenticación Biométrica y Sesión (MVP 50%)",
+            text = "Seguridad Biométrica y Sesión (100%)",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
         )
@@ -119,7 +130,12 @@ fun BiometricSessionScreen(
                 LockedSection(
                     isFirstUnlockPending = session.isFirstUnlockPending,
                     isLoading = state.isLoading,
+                    biometricOutcome = state.biometricOutcome,
                     onUnlockClick = { viewModel.emitEvent(BiometricSessionEvent.UnlockWithBiometrics) },
+                    onOpenSecuritySettingsClick = {
+                        viewModel.emitEvent(BiometricSessionEvent.OpenSecuritySettings)
+                    },
+                    onDismissOutcome = { viewModel.emitEvent(BiometricSessionEvent.ClearError) },
                     onResetClick = { viewModel.emitEvent(BiometricSessionEvent.ResetEnrollment) },
                 )
             }
@@ -128,6 +144,14 @@ fun BiometricSessionScreen(
                 UnlockedSection(
                     unlockedState = session,
                     isLoading = state.isLoading,
+                    protectedApiResponse = state.protectedApiResponse,
+                    simulateUnauthorizedNextCall = state.simulateUnauthorizedNextCall,
+                    onToggleSimulateUnauthorized = {
+                        viewModel.emitEvent(BiometricSessionEvent.ToggleSimulateUnauthorized(it))
+                    },
+                    onSimulateProtectedApiClick = {
+                        viewModel.emitEvent(BiometricSessionEvent.SimulateProtectedApiRequest())
+                    },
                     onLockClick = { viewModel.emitEvent(BiometricSessionEvent.LockSession) },
                     onResetClick = { viewModel.emitEvent(BiometricSessionEvent.ResetEnrollment) },
                 )
@@ -237,7 +261,7 @@ private fun UnregisteredSection(
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = "Simula un login inicial para que el Mock Backend emita un enrollmentToken de un solo uso y se guarde cifrado localmente con KSafe.",
+                text = "Simula un login inicial para que el Backend emita un enrollmentToken de un solo uso vinculado al deviceId cifrado en KSafe.",
                 style = MaterialTheme.typography.bodyMedium,
             )
             Button(
@@ -255,13 +279,24 @@ private fun UnregisteredSection(
 private fun LockedSection(
     isFirstUnlockPending: Boolean,
     isLoading: Boolean,
+    biometricOutcome: BiometricAuthOutcome?,
     onUnlockClick: () -> Unit,
+    onOpenSecuritySettingsClick: () -> Unit,
+    onDismissOutcome: () -> Unit,
     onResetClick: () -> Unit,
 ) {
     val badgeText = if (isFirstUnlockPending) {
         "Próximo desbloqueo: INSTANCIA 1 (Solicitará Token Inicial al Backend)"
     } else {
         "Próximo desbloqueo: INSTANCIA 2+ (Solicitará Refresh Token al Backend)"
+    }
+
+    if (biometricOutcome != null && biometricOutcome != BiometricAuthOutcome.Success) {
+        BiometricOutcomeFeedbackBanner(
+            outcome = biometricOutcome,
+            onOpenSecuritySettingsClick = onOpenSecuritySettingsClick,
+            onDismiss = onDismissOutcome,
+        )
     }
 
     Card(modifier = Modifier.fillMaxWidth()) {
@@ -293,9 +328,9 @@ private fun LockedSection(
 
             Text(
                 text = if (isFirstUnlockPending) {
-                    "Se detectó un enrollmentToken de un solo uso y ningún refreshToken. Al autenticar con biometría se consumirá el enrollmentToken para obtener el par inicial de tokens."
+                    "Se detectó un enrollmentToken de un solo uso y ningún refreshToken. Al autenticar con biometría (BIOMETRIC_STRONG / BIOMETRIC_WEAK 2D) se consumirá el enrollmentToken para obtener el par inicial de tokens."
                 } else {
-                    "Se detectó un refreshToken persistido en KSafe. Al autenticar con biometría se llamará al endpoint de rotación de Refresh Token."
+                    "Se detectó un refreshToken persistido en KSafe. Al autenticar con biometría (BIOMETRIC_STRONG / BIOMETRIC_WEAK 2D) se llamará al endpoint de rotación de Refresh Token."
                 },
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -320,9 +355,78 @@ private fun LockedSection(
 }
 
 @Composable
+private fun BiometricOutcomeFeedbackBanner(
+    outcome: BiometricAuthOutcome,
+    onOpenSecuritySettingsClick: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val isWarning = outcome is BiometricAuthOutcome.Cancelled ||
+        outcome is BiometricAuthOutcome.NoBiometricsEnrolled
+    val containerColor = if (isWarning) {
+        MaterialTheme.colorScheme.secondaryContainer
+    } else {
+        MaterialTheme.colorScheme.errorContainer
+    }
+    val contentColor = if (isWarning) {
+        MaterialTheme.colorScheme.onSecondaryContainer
+    } else {
+        MaterialTheme.colorScheme.onErrorContainer
+    }
+
+    val title = when (outcome) {
+        BiometricAuthOutcome.Cancelled -> "Verificación cancelada"
+        BiometricAuthOutcome.NoBiometricsEnrolled -> "Sin biometría configurada en el dispositivo"
+        BiometricAuthOutcome.Lockout -> "Sensor biométrico bloqueado temporalmente"
+        BiometricAuthOutcome.HardwareUnavailable -> "Hardware biométrico no disponible"
+        is BiometricAuthOutcome.Error -> "Error de autenticación biométrica"
+        BiometricAuthOutcome.Success -> ""
+    }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = containerColor),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+                color = contentColor,
+            )
+            Text(
+                text = outcome.toReadableMessage(),
+                style = MaterialTheme.typography.bodyMedium,
+                color = contentColor,
+            )
+            if (outcome is BiometricAuthOutcome.NoBiometricsEnrolled) {
+                Button(
+                    onClick = onOpenSecuritySettingsClick,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text("Abrir Ajustes de Seguridad de Android")
+                }
+            }
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.align(Alignment.End),
+            ) {
+                Text("Entendido")
+            }
+        }
+    }
+}
+
+@Composable
 private fun UnlockedSection(
     unlockedState: SessionState.Unlocked,
     isLoading: Boolean,
+    protectedApiResponse: String?,
+    simulateUnauthorizedNextCall: Boolean,
+    onToggleSimulateUnauthorized: (Boolean) -> Unit,
+    onSimulateProtectedApiClick: () -> Unit,
     onLockClick: () -> Unit,
     onResetClick: () -> Unit,
 ) {
@@ -381,6 +485,57 @@ private fun UnlockedSection(
                     )
                 }
             }
+
+            HorizontalDivider()
+
+            Text(
+                text = "Prueba de Capa de Red / Endpoint Protegido",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = "Forzar HTTP 401 Unauthorized (Auto-Lock):",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.weight(1f),
+                )
+                Switch(
+                    checked = simulateUnauthorizedNextCall,
+                    onCheckedChange = onToggleSimulateUnauthorized,
+                    enabled = !isLoading,
+                )
+            }
+
+            Button(
+                onClick = onSimulateProtectedApiClick,
+                enabled = !isLoading,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Simular Petición API Protegida")
+            }
+
+            protectedApiResponse?.let { apiResponse ->
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = apiResponse,
+                        modifier = Modifier.padding(12.dp),
+                        style = MaterialTheme.typography.bodySmall,
+                        fontFamily = FontFamily.Monospace,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                }
+            }
+
+            HorizontalDivider()
 
             Button(
                 onClick = onLockClick,

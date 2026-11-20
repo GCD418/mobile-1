@@ -3,7 +3,9 @@ package gcd.testing.firstproject.di
 import gcd.testing.firstproject.biometrics.domain.usecase.EnrollBiometricsUseCase
 import gcd.testing.firstproject.biometrics.domain.usecase.LockSessionUseCase
 import gcd.testing.firstproject.biometrics.domain.usecase.ObserveSessionStateUseCase
+import gcd.testing.firstproject.biometrics.domain.usecase.OpenSecuritySettingsUseCase
 import gcd.testing.firstproject.biometrics.domain.usecase.ResetEnrollmentUseCase
+import gcd.testing.firstproject.biometrics.domain.usecase.SimulateProtectedApiRequestUseCase
 import gcd.testing.firstproject.biometrics.domain.usecase.UnlockWithBiometricsUseCase
 import gcd.testing.firstproject.dollar.domain.usecase.AddDollarQuoteUseCase
 import gcd.testing.firstproject.dollar.domain.usecase.GetDollarQuotesUseCase
@@ -34,4 +36,6 @@ val domainModule = module {
     singleOf(::UnlockWithBiometricsUseCase)
     singleOf(::LockSessionUseCase)
     singleOf(::ResetEnrollmentUseCase)
+    singleOf(::SimulateProtectedApiRequestUseCase)
+    singleOf(::OpenSecuritySettingsUseCase)
 }

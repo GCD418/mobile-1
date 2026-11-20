@@ -1,6 +1,7 @@
 package gcd.testing.firstproject.di
 
 import eu.anifantakis.lib.ksafe.KSafe
+import gcd.testing.firstproject.biometrics.data.security.BiometricPromptAuthenticator
 import gcd.testing.firstproject.config.AppDatabase
 import gcd.testing.firstproject.getDatabaseBuilder
 import org.koin.core.module.Module
@@ -11,4 +12,5 @@ actual fun platformModule(): Module = module {
         getDatabaseBuilder().build()
     }
     single { KSafe() }
+    single { BiometricPromptAuthenticator() }
 }
