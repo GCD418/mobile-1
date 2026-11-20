@@ -4,6 +4,8 @@ import gcd.testing.firstproject.biometrics.domain.model.TokenPair
 
 interface BiometricRemoteDataSource {
     suspend fun fetchEnrollmentToken(
+        email: String = DEFAULT_EMAIL,
+        password: String = DEFAULT_PASSWORD,
         deviceId: String = "",
         deviceName: String = "",
     ): String
@@ -26,4 +28,9 @@ interface BiometricRemoteDataSource {
     fun syncRefreshCount(count: Int) = Unit
 
     fun resetCounter() = Unit
+
+    companion object {
+        const val DEFAULT_EMAIL = "test@example.com"
+        const val DEFAULT_PASSWORD = "password123"
+    }
 }

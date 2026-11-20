@@ -9,6 +9,8 @@ class FakeBiometricRemoteDataSource : BiometricRemoteDataSource {
     private var refreshCounter: Int = 0
 
     override suspend fun fetchEnrollmentToken(
+        email: String,
+        password: String,
         deviceId: String,
         deviceName: String,
     ): String {

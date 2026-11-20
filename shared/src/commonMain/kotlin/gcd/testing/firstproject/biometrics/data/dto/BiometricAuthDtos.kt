@@ -3,6 +3,18 @@ package gcd.testing.firstproject.biometrics.data.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class LoginRequest(
+    val email: String,
+    val password: String,
+    val deviceId: String,
+)
+
+@Serializable
+data class LoginResponse(
+    val enrollmentToken: String,
+)
+
+@Serializable
 data class EnrollBiometricsRequest(
     val deviceId: String,
     val deviceName: String,

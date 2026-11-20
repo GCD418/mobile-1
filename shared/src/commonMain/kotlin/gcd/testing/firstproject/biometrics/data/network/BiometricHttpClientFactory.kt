@@ -4,10 +4,13 @@ import gcd.testing.firstproject.biometrics.domain.model.SessionState
 import gcd.testing.firstproject.biometrics.domain.model.UnauthorizedException
 import gcd.testing.firstproject.biometrics.domain.repository.BiometricSessionRepository
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.statement.request
+import io.ktor.client.request.header
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.encodedPath
@@ -20,8 +23,8 @@ fun createBiometricHttpClient(
     val bearerInterceptorPlugin = createClientPlugin("BiometricSessionBearerPlugin") {
         onRequest { request, _ ->
             val path = request.url.encodedPath
-            val isBiometricAuthEndpoint = path.contains("/auth/biometric/")
-            if (!isBiometricAuthEndpoint) {
+            val isPublicAuthEndpoint = path.contains("/auth/biometric/") || path.contains("/auth/login")
+            if (!isPublicAuthEndpoint) {
                 val state = runCatching { sessionRepositoryProvider().sessionState.value }.getOrNull()
                 if (state is SessionState.Unlocked && state.accessToken.isNotBlank()) {
                     request.headers.remove(HttpHeaders.Authorization)
@@ -32,7 +35,11 @@ fun createBiometricHttpClient(
     }
 
     return HttpClient {
-        expectSuccess = false
+        expectSuccess = true
+
+        install(DefaultRequest) {
+            header("ngrok-skip-browser-warning", "true")
+        }
 
         install(ContentNegotiation) {
             json(
@@ -49,11 +56,22 @@ fun createBiometricHttpClient(
         install(bearerInterceptorPlugin)
 
         HttpResponseValidator {
-            validateResponse { response ->
-                val path = response.request.url.encodedPath
+            handleResponseExceptionWithRequest { cause, request ->
+                val responseException = cause as? ResponseException ?: return@handleResponseExceptionWithRequest
+                val response = responseException.response
+                val status = response.status
+                val path = request.url.encodedPath
+                val isLoginEndpoint = path.contains("/auth/login")
                 val isBiometricAuthEndpoint = path.contains("/auth/biometric/")
 
-                if (response.status == HttpStatusCode.Unauthorized && !isBiometricAuthEndpoint) {
+                if (status == HttpStatusCode.Unauthorized && isLoginEndpoint) {
+                    throw UnauthorizedException(
+                        message = "Credenciales inválidas (401 Unauthorized).",
+                        statusCode = HttpStatusCode.Unauthorized.value,
+                    )
+                }
+
+                if (status == HttpStatusCode.Unauthorized && !isBiometricAuthEndpoint) {
                     runCatching { sessionRepositoryProvider().lockSession() }
                     throw UnauthorizedException(
                         message = "401 Unauthorized en endpoint de negocio ($path). Sesión bloqueada automáticamente.",
@@ -63,13 +81,20 @@ fun createBiometricHttpClient(
 
                 if (
                     isBiometricAuthEndpoint &&
-                    (response.status == HttpStatusCode.Unauthorized || response.status == HttpStatusCode.Forbidden)
+                    (status == HttpStatusCode.Unauthorized || status == HttpStatusCode.Forbidden)
                 ) {
                     throw UnauthorizedException(
                         message = "Sesión revocada o expirada, inicia sesión nuevamente",
-                        statusCode = response.status.value,
+                        statusCode = status.value,
                     )
                 }
+
+                val errorBody = runCatching { response.bodyAsText() }.getOrNull().orEmpty().trim()
+                val detail = if (errorBody.isNotBlank()) ": $errorBody" else ""
+                throw IllegalStateException(
+                    "Error HTTP ${status.value} (${status.description}) en $path$detail",
+                    responseException,
+                )
             }
         }
     }
